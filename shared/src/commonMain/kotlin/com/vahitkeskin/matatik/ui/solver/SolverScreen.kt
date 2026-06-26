@@ -24,7 +24,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontFamily
@@ -157,7 +161,13 @@ fun SolverContent(
                         indexInList = index
                     )
                 }
-                item { FinalAnswerCard(strings.finalAnswerLabel, solution.finalAnswerLatex) }
+                item {
+                    FinalAnswerCard(
+                        label = strings.finalAnswerLabel,
+                        finalLatex = solution.finalAnswerLatex,
+                        delayMillis = solution.steps.size * 450L
+                    )
+                }
             } ?: item { EmptyState(strings.emptyStateMessage) }
         }
 
@@ -290,8 +300,29 @@ private fun Pill(text: String, color: Color) {
 }
 
 @Composable
-private fun FinalAnswerCard(label: String, finalLatex: String) {
-    GlassCard {
+private fun FinalAnswerCard(label: String, finalLatex: String, delayMillis: Long = 0L) {
+    var visible by remember(finalLatex) { mutableStateOf(false) }
+    val progress by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        animationSpec = tween(durationMillis = 500)
+    )
+    val translationY by animateFloatAsState(
+        targetValue = if (visible) 0f else 40f,
+        animationSpec = tween(durationMillis = 500)
+    )
+    LaunchedEffect(finalLatex) {
+        kotlinx.coroutines.delay(delayMillis)
+        visible = true
+    }
+
+    GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer(
+                alpha = progress,
+                translationY = translationY
+            )
+    ) {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             Text(
