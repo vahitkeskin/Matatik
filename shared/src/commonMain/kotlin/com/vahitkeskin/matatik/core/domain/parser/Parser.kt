@@ -149,7 +149,47 @@ class Parser(input: String) {
                 expect(TokenType.RPAREN)
                 Expr.Log(base, arg)
             }
+            "d" -> parseDerivativeNotation()
+            "deriv" -> {
+                expect(TokenType.LPAREN)
+                val expr = parseExpr()
+                expect(TokenType.COMMA)
+                val varToken = expect(TokenType.IDENT)
+                expect(TokenType.RPAREN)
+                Expr.Derivative(expr, varToken.text)
+            }
             else -> Expr.Variable(name)
         }
+    }
+
+    /**
+     * `d/dx(...)` notasyonunu ayrıştırır.
+     * `d` zaten tüketilmiş durumda; `/` `d` `x` `(` expr `)` beklenir.
+     */
+    private fun parseDerivativeNotation(): Expr {
+        if (current.type != TokenType.SLASH) {
+            // Basit 'd' değişkeni olabilir
+            return Expr.Variable("d")
+        }
+        advance() // '/' tüket
+        val dToken = expect(TokenType.IDENT) // 'd' harfi beklenir (dx'in d'si)
+        if (dToken.text.length == 1 && dToken.text[0] == 'd') {
+            // Sonraki token değişken adı olmalı (x, y, t vb.)
+            // Eğer hemen IDENT geliyorsa: d/dx(...)
+            throw MathParseException("Türev değişkeni bekleniyor", dToken.position)
+        }
+        // dToken.text "dx", "dy" gibi; ilk 'd' atlanır, kalan değişken adıdır
+        val varName = if (dToken.text.startsWith("d") && dToken.text.length > 1) {
+            dToken.text.substring(1)
+        } else {
+            throw MathParseException(
+                "Türev notasyonu bekleniyor: d/dx(...), 'd${dToken.text}' alındı",
+                dToken.position
+            )
+        }
+        expect(TokenType.LPAREN)
+        val expr = parseExpr()
+        expect(TokenType.RPAREN)
+        return Expr.Derivative(expr, varName)
     }
 }

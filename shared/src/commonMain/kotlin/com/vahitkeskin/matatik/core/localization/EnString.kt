@@ -42,6 +42,13 @@ object EnString : LocalizedStrings {
         RuleKeys.LOG_EVALUATE -> "Evaluate the expression numerically."
         RuleKeys.LOG_EXP_DEFINITION -> "Use the exponential definition of the logarithm."
         RuleKeys.LOG_SOLUTION -> "Compute the value of the variable."
+        RuleKeys.DERIVATIVE_ORIGINAL -> "Write down the given derivative expression."
+        RuleKeys.DERIVATIVE_POWER_RULE -> "Apply the power rule: d/dx[xⁿ] = n·xⁿ⁻¹."
+        RuleKeys.DERIVATIVE_CONSTANT_RULE -> "The derivative of a constant is zero."
+        RuleKeys.DERIVATIVE_SUM_RULE -> "Sum/difference rule: differentiate each term."
+        RuleKeys.DERIVATIVE_COEFFICIENT_RULE -> "Factor out the constant coefficient."
+        RuleKeys.DERIVATIVE_SIMPLIFY -> "Simplify the resulting expression."
+        RuleKeys.DERIVATIVE_SOLUTION -> "Obtain the final derivative."
         else -> key
     }
 }

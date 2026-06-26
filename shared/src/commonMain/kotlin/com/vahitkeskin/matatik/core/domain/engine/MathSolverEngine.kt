@@ -40,7 +40,8 @@ class MathSolverEngine(
     companion object {
         fun defaultSolvers(): List<Solver> = listOf(
             LinearEquationSolver(),
-            LogarithmSolver()
+            LogarithmSolver(),
+            DerivativeSolver()
         )
     }
 }

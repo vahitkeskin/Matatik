@@ -32,6 +32,7 @@ object AlgebraUtils {
         is Expr.Neg -> findVariableName(expr.arg)
         is Expr.Log -> findVariableName(expr.base) ?: findVariableName(expr.arg)
         is Expr.Ln -> findVariableName(expr.arg)
+        is Expr.Derivative -> findVariableName(expr.expr)
     }
 
     /**
@@ -75,6 +76,7 @@ object AlgebraUtils {
             }
         }
         is Expr.Log, is Expr.Ln -> throw NotLinearException("Logaritma lineer cebir değil")
+        is Expr.Derivative -> throw NotLinearException("Türev ifadesi lineer cebir değil")
     }
 
     private fun pow(base: Double, exp: Double): Double = base.pow(exp)

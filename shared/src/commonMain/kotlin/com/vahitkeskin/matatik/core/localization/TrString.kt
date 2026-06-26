@@ -42,6 +42,13 @@ object TrString : LocalizedStrings {
         RuleKeys.LOG_EVALUATE -> "İfade sayısal olarak hesaplanır."
         RuleKeys.LOG_EXP_DEFINITION -> "Logaritmanın üstel tanımı kullanılır."
         RuleKeys.LOG_SOLUTION -> "Değişkenin değeri hesaplanır."
+        RuleKeys.DERIVATIVE_ORIGINAL -> "Verilen türev ifadesi yazılır."
+        RuleKeys.DERIVATIVE_POWER_RULE -> "Kuvvet kuralı uygulanır: d/dx[xⁿ] = n·xⁿ⁻¹."
+        RuleKeys.DERIVATIVE_CONSTANT_RULE -> "Sabitin türevi sıfırdır."
+        RuleKeys.DERIVATIVE_SUM_RULE -> "Toplam/fark kuralı: her terim ayrı türevlenir."
+        RuleKeys.DERIVATIVE_COEFFICIENT_RULE -> "Sabit çarpan türevin dışına alınır."
+        RuleKeys.DERIVATIVE_SIMPLIFY -> "Elde edilen ifade sadeleştirilir."
+        RuleKeys.DERIVATIVE_SOLUTION -> "Türevin sonucu hesaplanır."
         else -> key
     }
 }

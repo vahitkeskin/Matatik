@@ -40,6 +40,9 @@ sealed interface Expr {
 
     /** Doğal logaritma: ln(arg). */
     data class Ln(val arg: Expr) : Expr
+
+    /** Türev: d/d(variable)(expr). */
+    data class Derivative(val expr: Expr, val variable: String) : Expr
 }
 
 /** lhs = rhs biçimindeki bir denklemi temsil eder. */

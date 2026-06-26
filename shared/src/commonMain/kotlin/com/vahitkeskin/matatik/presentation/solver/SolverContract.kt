@@ -26,7 +26,8 @@ data class SolverState(
             "2x + 3 = 7",
             "5x - 4 = 2x + 11",
             "log_2(8)",
-            "log_3(x) = 4"
+            "log_3(x) = 4",
+            "d/dx(x^3 + 2x)"
         )
     }
 }

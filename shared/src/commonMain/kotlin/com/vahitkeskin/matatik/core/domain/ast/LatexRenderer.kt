@@ -18,7 +18,7 @@ object LatexRenderer {
         is Expr.Mul, is Expr.Div -> 2
         is Expr.Neg -> 3
         is Expr.Pow -> 4
-        is Expr.Num, is Expr.Variable, is Expr.Log, is Expr.Ln -> 5
+        is Expr.Num, is Expr.Variable, is Expr.Log, is Expr.Ln, is Expr.Derivative -> 5
     }
 
     private fun wrap(child: Expr, parentPrec: Int): String {
@@ -37,6 +37,7 @@ object LatexRenderer {
         is Expr.Neg -> "-${wrap(expr.arg, 3)}"
         is Expr.Log -> "\\log_{${render(expr.base)}}\\left(${render(expr.arg)}\\right)"
         is Expr.Ln -> "\\ln\\left(${render(expr.arg)}\\right)"
+        is Expr.Derivative -> "\\frac{d}{d${expr.variable}}\\left(${render(expr.expr)}\\right)"
     }
 
     /** Katsayı-değişken çarpımlarında "\\cdot" yerine bitişik gösterim (2x) kullanılır. */

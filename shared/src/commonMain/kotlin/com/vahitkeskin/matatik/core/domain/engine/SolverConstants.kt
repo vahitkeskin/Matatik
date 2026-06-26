@@ -29,4 +29,12 @@ object RuleKeys {
     const val LOG_EVALUATE = "rules.log.evaluate"
     const val LOG_EXP_DEFINITION = "rules.log.exponential_definition"
     const val LOG_SOLUTION = "rules.log.solution"
+
+    const val DERIVATIVE_ORIGINAL = "rules.derivative.original"
+    const val DERIVATIVE_POWER_RULE = "rules.derivative.power_rule"
+    const val DERIVATIVE_CONSTANT_RULE = "rules.derivative.constant_rule"
+    const val DERIVATIVE_SUM_RULE = "rules.derivative.sum_rule"
+    const val DERIVATIVE_COEFFICIENT_RULE = "rules.derivative.coefficient_rule"
+    const val DERIVATIVE_SIMPLIFY = "rules.derivative.simplify"
+    const val DERIVATIVE_SOLUTION = "rules.derivative.solution"
 }
