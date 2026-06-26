@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Özel uygulama teması. Varsayılan launcher-ikonlu/beyaz sistem splash'ı yerine,
+      pencere arka planını Compose splash ekranının rengiyle eşitler; böylece açılış
+      tamamen özel Canvas animasyonuna kusursuz geçer.
+    -->
+    <style name="Theme.Matatik" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+</resources>
