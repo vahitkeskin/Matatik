@@ -26,6 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +36,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,11 +53,13 @@ import com.vahitkeskin.matatik.presentation.solver.SolverViewModel
 import com.vahitkeskin.matatik.ui.components.GlassButton
 import com.vahitkeskin.matatik.ui.components.GlassCard
 import com.vahitkeskin.matatik.ui.components.SolutionStepCard
+import com.vahitkeskin.matatik.ui.components.LanguageSelectionDialog
 import com.vahitkeskin.matatik.ui.math.LatexDisplay
 import com.vahitkeskin.matatik.ui.theme.MatatikColors
 import com.vahitkeskin.matatik.ui.theme.MatatikTheme
 import com.vahitkeskin.matatik.ui.theme.ThemeMode
 import com.vahitkeskin.matatik.ui.theme.backgroundBrush
+
 
 /**
  * Çözücü ekranı (stateful sarmalayıcı). ViewModel'i oluşturur, durumu toplar
@@ -79,6 +86,9 @@ fun SolverContent(
     onIntent: (SolverIntent) -> Unit
 ) {
     val strings = state.strings
+    val haptic = LocalHapticFeedback.current
+    var showLanguageDialog by remember { mutableStateOf(false) }
+
     Box(
         Modifier
             .fillMaxSize()
@@ -92,7 +102,7 @@ fun SolverContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(vertical = 10.dp)
         ) {
-            item { Header(state, onIntent) }
+            item { Header(state) { showLanguageDialog = true } }
 
             item {
                 GlassCard {
@@ -114,12 +124,18 @@ fun SolverContent(
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             GlassButton(
                                 text = strings.solveButton,
-                                onClick = { onIntent(SolverIntent.Solve) },
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onIntent(SolverIntent.Solve)
+                                },
                                 enabled = state.canSolve
                             )
                             GhostButton(
                                 text = strings.clearButton,
-                                onClick = { onIntent(SolverIntent.Clear) }
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onIntent(SolverIntent.Clear)
+                                }
                             )
                         }
                     }
@@ -144,18 +160,31 @@ fun SolverContent(
                 item { FinalAnswerCard(strings.finalAnswerLabel, solution.finalAnswerLatex) }
             } ?: item { EmptyState(strings.emptyStateMessage) }
         }
+
+        if (showLanguageDialog) {
+            LanguageSelectionDialog(
+                strings = strings,
+                currentLanguage = state.language,
+                onLanguageSelected = { lang ->
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onIntent(SolverIntent.ChangeLanguage(lang))
+                },
+                onDismissRequest = { showLanguageDialog = false }
+            )
+        }
     }
 }
 
 @Composable
-private fun Header(state: SolverState, onIntent: (SolverIntent) -> Unit) {
+private fun Header(state: SolverState, onLanguageClick: () -> Unit) {
+    val haptic = LocalHapticFeedback.current
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = state.strings.appName,
                     fontSize = 30.sp,
@@ -168,45 +197,40 @@ private fun Header(state: SolverState, onIntent: (SolverIntent) -> Unit) {
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
             }
-            Text(
-                text = "${state.strings.versionPrefix} ${AppVersion.NAME}",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
-            )
-        }
-        Spacer(Modifier.height(6.dp))
-        LanguageRow(state, onIntent)
-    }
-}
-
-@Composable
-private fun LanguageRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
-    val scrollState = rememberScrollState()
-    Row(
-        modifier = Modifier.horizontalScroll(scrollState),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        Localization.translatedLanguages.forEach { lang ->
-            val selected = lang == state.language
-            Box(
-                Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(
-                        if (selected) MatatikColors.Violet.copy(alpha = 0.25f) else Color.Transparent
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = "${state.strings.versionPrefix} ${AppVersion.NAME}",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                )
+                Spacer(Modifier.height(6.dp))
+                Box(
+                    Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onLanguageClick()
+                        }
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = "${state.language.flag} ${state.language.nativeName}",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    .clickable { onIntent(SolverIntent.ChangeLanguage(lang)) }
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text("${lang.flag} ${lang.nativeName}", fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onBackground)
+                }
             }
         }
+        Spacer(Modifier.height(6.dp))
     }
 }
 
 @Composable
 private fun ExamplesRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
     val scrollState = rememberScrollState()
+    val haptic = LocalHapticFeedback.current
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
             text = state.strings.examplesTitle,
@@ -223,7 +247,10 @@ private fun ExamplesRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
                     Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .background(MatatikColors.Teal.copy(alpha = 0.16f))
-                        .clickable { onIntent(SolverIntent.LoadExample(example)) }
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onIntent(SolverIntent.LoadExample(example))
+                        }
                         .padding(horizontal = 10.dp, vertical = 6.dp)
                 ) {
                     Text(

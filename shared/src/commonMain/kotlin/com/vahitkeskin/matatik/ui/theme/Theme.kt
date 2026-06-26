@@ -6,9 +6,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+
+val LocalIsDarkTheme = compositionLocalOf { true }
 
 /** Uygulamanın tema modu. CLAUDE.md: Sistem Varsayılan / Açık / Koyu. */
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
@@ -23,6 +26,7 @@ data class GlassPalette(
 val LocalGlassPalette = staticCompositionLocalOf {
     GlassPalette(MatatikColors.GlassDark, MatatikColors.GlassBorderDark, isDark = true)
 }
+
 
 private val DarkScheme = darkColorScheme(
     primary = MatatikColors.Violet,
@@ -68,7 +72,10 @@ fun MatatikTheme(
     // Sistem barlarını (StatusBar / NavigationBar) arka plan rengiyle eşitle.
     SyncSystemBars(backgroundColor = scheme.background, darkIcons = !dark)
 
-    CompositionLocalProvider(LocalGlassPalette provides glass) {
+    CompositionLocalProvider(
+        LocalGlassPalette provides glass,
+        LocalIsDarkTheme provides dark
+    ) {
         MaterialTheme(colorScheme = scheme, content = content)
     }
 }
@@ -76,10 +83,18 @@ fun MatatikTheme(
 /** Arka plan için dikey degrade üreten yardımcı. */
 fun backgroundBrush(dark: Boolean): Brush = if (dark) {
     Brush.verticalGradient(
-        listOf(Color(0xFF0B0E1A), Color(0xFF161A2E), Color(0xFF0B0E1A))
+        listOf(
+            AppColors.Midnight, // Deep Midnight Blue
+            AppColors.Navy, // Deep Navy
+            AppColors.DarkSlate  // Dark Slate
+        )
     )
 } else {
     Brush.verticalGradient(
-        listOf(Color(0xFFF1F3FF), Color(0xFFE3E8FF), Color(0xFFF1F3FF))
+        listOf(
+            AppColors.Slate50ish, // Slate 50ish
+            AppColors.Slate100, // Slate 100
+            AppColors.Slate200  // Slate 200
+        )
     )
 }
