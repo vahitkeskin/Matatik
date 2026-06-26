@@ -37,4 +37,3 @@ object Localization {
     /** Çevirisi tamamlanmış (gerçek) diller. */
     val translatedLanguages: List<Language> = registry.keys.sortedBy { it.ordinal }
 }
-
