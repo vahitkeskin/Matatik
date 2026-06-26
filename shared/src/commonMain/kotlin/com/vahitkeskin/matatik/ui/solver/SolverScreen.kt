@@ -2,6 +2,8 @@ package com.vahitkeskin.matatik.ui.solver
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,8 +89,8 @@ fun SolverContent(
                 .fillMaxSize()
                 .safeContentPadding()
                 .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-            contentPadding = PaddingValues(vertical = 16.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(vertical = 10.dp)
         ) {
             item { Header(state, onIntent) }
 
@@ -172,14 +174,18 @@ private fun Header(state: SolverState, onIntent: (SolverIntent) -> Unit) {
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
             )
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(6.dp))
         LanguageRow(state, onIntent)
     }
 }
 
 @Composable
 private fun LanguageRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    val scrollState = rememberScrollState()
+    Row(
+        modifier = Modifier.horizontalScroll(scrollState),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
         Localization.translatedLanguages.forEach { lang ->
             val selected = lang == state.language
             Box(
@@ -189,9 +195,9 @@ private fun LanguageRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
                         if (selected) MatatikColors.Violet.copy(alpha = 0.25f) else Color.Transparent
                     )
                     .clickable { onIntent(SolverIntent.ChangeLanguage(lang)) }
-                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
-                Text("${lang.flag} ${lang.nativeName}", fontSize = 13.sp,
+                Text("${lang.flag} ${lang.nativeName}", fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onBackground)
             }
         }
@@ -200,26 +206,30 @@ private fun LanguageRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
 
 @Composable
 private fun ExamplesRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    val scrollState = rememberScrollState()
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
             text = state.strings.examplesTitle,
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            state.examples.take(4).forEach { example ->
+        Row(
+            modifier = Modifier.horizontalScroll(scrollState),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            state.examples.take(5).forEach { example ->
                 Box(
                     Modifier
                         .clip(RoundedCornerShape(12.dp))
                         .background(MatatikColors.Teal.copy(alpha = 0.16f))
                         .clickable { onIntent(SolverIntent.LoadExample(example)) }
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
                 ) {
                     Text(
                         LatexDisplay.render(example),
                         fontFamily = FontFamily.Monospace,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
@@ -231,8 +241,8 @@ private fun ExamplesRow(state: SolverState, onIntent: (SolverIntent) -> Unit) {
 @Composable
 private fun SolutionHeader(solution: MathematicalSolution, topicName: String) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Pill(topicName, MatatikColors.Violet)
@@ -246,21 +256,21 @@ private fun Pill(text: String, color: Color) {
         Modifier
             .clip(RoundedCornerShape(20.dp))
             .background(color.copy(alpha = 0.18f))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = 10.dp, vertical = 4.dp)
     ) {
-        Text(text, color = color, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        Text(text, color = color, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
     }
 }
 
 @Composable
 private fun FinalAnswerCard(label: String, finalLatex: String) {
     GlassCard {
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
             Text(
                 LatexDisplay.render(finalLatex),
                 fontFamily = FontFamily.Monospace,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = MatatikColors.Orange
             )
@@ -284,13 +294,13 @@ private fun ErrorCard(message: String) {
 @Composable
 private fun EmptyState(message: String) {
     Box(
-        Modifier.fillMaxWidth().padding(vertical = 48.dp),
+        Modifier.fillMaxWidth().padding(vertical = 24.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             message,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-            fontSize = 15.sp
+            fontSize = 14.sp
         )
     }
 }

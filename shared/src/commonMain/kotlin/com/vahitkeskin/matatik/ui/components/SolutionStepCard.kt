@@ -64,10 +64,10 @@ fun SolutionStepCard(
             .fillMaxWidth()
             .alpha(progress)
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 StepBadge(step.stepNumber)
-                Spacer(Modifier.size(12.dp))
+                Spacer(Modifier.size(8.dp))
                 Text(
                     text = step.ruleApplied,
                     style = MaterialTheme.typography.titleMedium,
@@ -103,7 +103,7 @@ fun SolutionStepCard(
                             )
                         )
                     }
-                    .padding(horizontal = 14.dp, vertical = 12.dp)
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
             ) {
                 Text(
                     text = LatexDisplay.render(step.currentExpressionLatex),
@@ -149,12 +149,12 @@ private fun FormulaChip(text: String) {
             .drawBehind {
                 drawRoundRect(color = MatatikColors.Teal.copy(alpha = 0.14f))
             }
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(horizontal = 10.dp, vertical = 4.dp)
     ) {
         Text(
             text = text,
             fontFamily = FontFamily.Monospace,
-            fontSize = 15.sp,
+            fontSize = 14.sp,
             color = MaterialTheme.colorScheme.secondary
         )
     }
