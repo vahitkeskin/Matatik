@@ -29,7 +29,7 @@ class DerivativeSolver : Solver {
         // rhs = 0 sentinel + lhs Derivative düğümü
         val rhsSentinel = equation.rhs is Expr.Num && (equation.rhs as Expr.Num).value == 0.0
         if (!rhsSentinel) return false
-        return equation.lhs is Expr.Derivative && isPolynomial(
+        return equation.lhs is Expr.Derivative && isDifferentiable(
             (equation.lhs as Expr.Derivative).expr
         )
     }
@@ -186,8 +186,19 @@ class DerivativeSolver : Solver {
             }
         }
 
+        is Expr.Trig -> {
+            val argDeriv = differentiate(expr.arg, varName)
+            when (expr.func) {
+                "sin" -> Expr.Mul(Expr.Trig("cos", expr.arg), argDeriv)
+                "cos" -> Expr.Mul(Expr.Neg(Expr.Trig("sin", expr.arg)), argDeriv)
+                "tan" -> Expr.Mul(Expr.Add(Exprs.ONE, Expr.Pow(Expr.Trig("tan", expr.arg), Exprs.num(2))), argDeriv)
+                "cot" -> Expr.Mul(Expr.Neg(Expr.Add(Exprs.ONE, Expr.Pow(Expr.Trig("cot", expr.arg), Exprs.num(2)))), argDeriv)
+                else -> throw UnsupportedProblemException("Desteklenmeyen trigonometrik türev: ${expr.func}")
+            }
+        }
+
         // Logaritma ve diğer fonksiyonlar şimdilik desteklenmiyor
-        is Expr.Log, is Expr.Ln, is Expr.Derivative ->
+        is Expr.Log, is Expr.Ln, is Expr.Derivative, is Expr.Limit, is Expr.Integral ->
             throw UnsupportedProblemException("Bu ifadenin türevi henüz desteklenmiyor")
     }
 
@@ -204,18 +215,22 @@ class DerivativeSolver : Solver {
         is Expr.Log -> isConstant(expr.base, varName) && isConstant(expr.arg, varName)
         is Expr.Ln -> isConstant(expr.arg, varName)
         is Expr.Derivative -> false
+        is Expr.Limit -> isConstant(expr.expr, varName) && isConstant(expr.target, varName)
+        is Expr.Integral -> isConstant(expr.expr, varName) && (expr.lowerBound == null || isConstant(expr.lowerBound, varName)) && (expr.upperBound == null || isConstant(expr.upperBound, varName))
+        is Expr.Trig -> isConstant(expr.arg, varName)
     }
 
-    /** İfade polinom mi (türev çözücünün desteklediği alt küme)? */
-    private fun isPolynomial(expr: Expr): Boolean = when (expr) {
+    /** İfade diferansiyellenebilir mi (türev çözücünün desteklediği alt küme)? */
+    private fun isDifferentiable(expr: Expr): Boolean = when (expr) {
         is Expr.Num, is Expr.Variable -> true
-        is Expr.Add -> isPolynomial(expr.left) && isPolynomial(expr.right)
-        is Expr.Sub -> isPolynomial(expr.left) && isPolynomial(expr.right)
-        is Expr.Mul -> isPolynomial(expr.left) && isPolynomial(expr.right)
-        is Expr.Div -> isPolynomial(expr.left) && expr.right is Expr.Num
-        is Expr.Pow -> isPolynomial(expr.base) && expr.exponent is Expr.Num
-        is Expr.Neg -> isPolynomial(expr.arg)
-        is Expr.Log, is Expr.Ln, is Expr.Derivative -> false
+        is Expr.Add -> isDifferentiable(expr.left) && isDifferentiable(expr.right)
+        is Expr.Sub -> isDifferentiable(expr.left) && isDifferentiable(expr.right)
+        is Expr.Mul -> isDifferentiable(expr.left) && isDifferentiable(expr.right)
+        is Expr.Div -> isDifferentiable(expr.left) && isDifferentiable(expr.right)
+        is Expr.Pow -> isDifferentiable(expr.base) && isDifferentiable(expr.exponent)
+        is Expr.Neg -> isDifferentiable(expr.arg)
+        is Expr.Trig -> isDifferentiable(expr.arg)
+        is Expr.Log, is Expr.Ln, is Expr.Derivative, is Expr.Limit, is Expr.Integral -> false
     }
 
     /** Basit cebirsel sadeleştirme. */
@@ -320,5 +335,8 @@ class DerivativeSolver : Solver {
         is Expr.Log -> 1 + maxOf(exprDepth(expr.base), exprDepth(expr.arg))
         is Expr.Ln -> 1 + exprDepth(expr.arg)
         is Expr.Derivative -> 1 + exprDepth(expr.expr)
+        is Expr.Limit -> 1 + maxOf(exprDepth(expr.expr), exprDepth(expr.target))
+        is Expr.Integral -> 1 + exprDepth(expr.expr) + (expr.lowerBound?.let { exprDepth(it) } ?: 0) + (expr.upperBound?.let { exprDepth(it) } ?: 0)
+        is Expr.Trig -> 1 + exprDepth(expr.arg)
     }
 }

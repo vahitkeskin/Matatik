@@ -43,6 +43,15 @@ sealed interface Expr {
 
     /** Türev: d/d(variable)(expr). */
     data class Derivative(val expr: Expr, val variable: String) : Expr
+
+    /** Limit: lim_(variable -> target)(expr). */
+    data class Limit(val expr: Expr, val variable: String, val target: Expr) : Expr
+
+    /** İntegral: int(expr, variable, lowerBound, upperBound). */
+    data class Integral(val expr: Expr, val variable: String, val lowerBound: Expr? = null, val upperBound: Expr? = null) : Expr
+
+    /** Trigonometri: sin, cos, tan, cot, vb. */
+    data class Trig(val func: String, val arg: Expr) : Expr
 }
 
 /** lhs = rhs biçimindeki bir denklemi temsil eder. */

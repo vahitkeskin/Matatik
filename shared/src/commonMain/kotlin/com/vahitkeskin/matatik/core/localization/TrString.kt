@@ -49,6 +49,23 @@ object TrString : LocalizedStrings {
         RuleKeys.DERIVATIVE_COEFFICIENT_RULE -> "Sabit çarpan türevin dışına alınır."
         RuleKeys.DERIVATIVE_SIMPLIFY -> "Elde edilen ifade sadeleştirilir."
         RuleKeys.DERIVATIVE_SOLUTION -> "Türevin sonucu hesaplanır."
+        RuleKeys.LIMIT_ORIGINAL -> "Verilen limit ifadesi yazılır."
+        RuleKeys.LIMIT_SUBSTITUTION -> "Doğrudan yerine koyma yöntemi uygulanır."
+        RuleKeys.LIMIT_L_HOPITAL -> "0/0 belirsizliği için L'Hôpital kuralı uygulanarak pay ve paydanın türevi alınır."
+        RuleKeys.LIMIT_SIMPLIFY -> "Limit ifadesi sadeleştirilir."
+        RuleKeys.LIMIT_SOLUTION -> "Limit değeri hesaplanır."
+        RuleKeys.INTEGRAL_ORIGINAL -> "Verilen integral ifadesi yazılır."
+        RuleKeys.INTEGRAL_POWER_RULE -> "İntegral kuvvet kuralı uygulanır: ∫ xⁿ dx = xⁿ⁺¹/(n+1)."
+        RuleKeys.INTEGRAL_SUM_RULE -> "Toplam/fark kuralı: her terimin integrali ayrı alınır."
+        RuleKeys.INTEGRAL_COEFFICIENT_RULE -> "Sabit çarpan integralin dışına alınır."
+        RuleKeys.INTEGRAL_TRIG_RULE -> "Temel trigonometrik integral kuralları uygulanır."
+        RuleKeys.INTEGRAL_SIMPLIFY -> "Elde edilen integral ifadesi sadeleştirilir."
+        RuleKeys.INTEGRAL_DEFINITE_EVAL -> "Belirli integral sınır değerleri yerine yazılır (Newton-Leibniz)."
+        RuleKeys.INTEGRAL_SOLUTION -> "İntegral sonucu bulunur."
+        RuleKeys.TRIG_ORIGINAL -> "Verilen trigonometrik ifade yazılır."
+        RuleKeys.TRIG_EVALUATE -> "Trigonometrik oranlar tam/sayısal olarak hesaplanır."
+        RuleKeys.TRIG_IDENTITY -> "Trigonometrik özdeşlikler ve genel çözüm kümeleri uygulanır."
+        RuleKeys.TRIG_SOLUTION -> "Trigonometrik çözüm tamamlanır."
         else -> key
     }
 }

@@ -46,4 +46,23 @@ class ParserTest {
     fun `gecersiz karakter hata firlatir`() {
         assertFailsWith<MathParseException> { Parser("2 @ 3").parseEquation() }
     }
+
+    @Test
+    fun `limit integral trig ifadeleri dogru ayristirilir`() {
+        val limExpr = Parser("lim(x^2, x, 2)").parseExpression()
+        assertTrue(limExpr is Expr.Limit)
+        assertEquals("x", limExpr.variable)
+        assertEquals(2.0, (limExpr.target as Expr.Num).value)
+
+        val intExpr = Parser("int(x, x, 0, 1)").parseExpression()
+        assertTrue(intExpr is Expr.Integral)
+        assertEquals("x", intExpr.variable)
+        assertEquals(0.0, (intExpr.lowerBound as Expr.Num).value)
+        assertEquals(1.0, (intExpr.upperBound as Expr.Num).value)
+
+        val trigExpr = Parser("sin(pi)").parseExpression()
+        assertTrue(trigExpr is Expr.Trig)
+        assertEquals("sin", trigExpr.func)
+        assertEquals("pi", (trigExpr.arg as Expr.Variable).name)
+    }
 }

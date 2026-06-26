@@ -49,6 +49,23 @@ object EnString : LocalizedStrings {
         RuleKeys.DERIVATIVE_COEFFICIENT_RULE -> "Factor out the constant coefficient."
         RuleKeys.DERIVATIVE_SIMPLIFY -> "Simplify the resulting expression."
         RuleKeys.DERIVATIVE_SOLUTION -> "Obtain the final derivative."
+        RuleKeys.LIMIT_ORIGINAL -> "Write down the given limit expression."
+        RuleKeys.LIMIT_SUBSTITUTION -> "Apply direct substitution method."
+        RuleKeys.LIMIT_L_HOPITAL -> "Apply L'Hôpital's rule by differentiating the numerator and denominator for 0/0 form."
+        RuleKeys.LIMIT_SIMPLIFY -> "Simplify the limit expression."
+        RuleKeys.LIMIT_SOLUTION -> "Obtain the final limit value."
+        RuleKeys.INTEGRAL_ORIGINAL -> "Write down the given integral expression."
+        RuleKeys.INTEGRAL_POWER_RULE -> "Apply the integral power rule: ∫ xⁿ dx = xⁿ⁺¹/(n+1)."
+        RuleKeys.INTEGRAL_SUM_RULE -> "Sum/difference rule: integrate each term separately."
+        RuleKeys.INTEGRAL_COEFFICIENT_RULE -> "Factor out the constant coefficient."
+        RuleKeys.INTEGRAL_TRIG_RULE -> "Apply standard trigonometric integration rules."
+        RuleKeys.INTEGRAL_SIMPLIFY -> "Simplify the resulting integral expression."
+        RuleKeys.INTEGRAL_DEFINITE_EVAL -> "Substitute the upper and lower bounds (Newton-Leibniz formula)."
+        RuleKeys.INTEGRAL_SOLUTION -> "Obtain the final integral."
+        RuleKeys.TRIG_ORIGINAL -> "Write down the given trigonometric expression."
+        RuleKeys.TRIG_EVALUATE -> "Evaluate the trigonometric ratios numerically."
+        RuleKeys.TRIG_IDENTITY -> "Apply trigonometric identities and general solution sets."
+        RuleKeys.TRIG_SOLUTION -> "Complete the trigonometric solution."
         else -> key
     }
 }

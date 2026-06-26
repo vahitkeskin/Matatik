@@ -37,4 +37,24 @@ object RuleKeys {
     const val DERIVATIVE_COEFFICIENT_RULE = "rules.derivative.coefficient_rule"
     const val DERIVATIVE_SIMPLIFY = "rules.derivative.simplify"
     const val DERIVATIVE_SOLUTION = "rules.derivative.solution"
+
+    const val LIMIT_ORIGINAL = "rules.limit.original"
+    const val LIMIT_SUBSTITUTION = "rules.limit.substitution"
+    const val LIMIT_L_HOPITAL = "rules.limit.l_hopital"
+    const val LIMIT_SIMPLIFY = "rules.limit.simplify"
+    const val LIMIT_SOLUTION = "rules.limit.solution"
+
+    const val INTEGRAL_ORIGINAL = "rules.integral.original"
+    const val INTEGRAL_POWER_RULE = "rules.integral.power_rule"
+    const val INTEGRAL_SUM_RULE = "rules.integral.sum_rule"
+    const val INTEGRAL_COEFFICIENT_RULE = "rules.integral.coefficient_rule"
+    const val INTEGRAL_TRIG_RULE = "rules.integral.trig_rule"
+    const val INTEGRAL_SIMPLIFY = "rules.integral.simplify"
+    const val INTEGRAL_DEFINITE_EVAL = "rules.integral.definite_eval"
+    const val INTEGRAL_SOLUTION = "rules.integral.solution"
+
+    const val TRIG_ORIGINAL = "rules.trig.original"
+    const val TRIG_EVALUATE = "rules.trig.evaluate"
+    const val TRIG_IDENTITY = "rules.trig.identity"
+    const val TRIG_SOLUTION = "rules.trig.solution"
 }

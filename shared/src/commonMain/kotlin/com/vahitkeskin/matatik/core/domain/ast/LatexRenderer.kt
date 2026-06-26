@@ -18,7 +18,8 @@ object LatexRenderer {
         is Expr.Mul, is Expr.Div -> 2
         is Expr.Neg -> 3
         is Expr.Pow -> 4
-        is Expr.Num, is Expr.Variable, is Expr.Log, is Expr.Ln, is Expr.Derivative -> 5
+        is Expr.Num, is Expr.Variable, is Expr.Log, is Expr.Ln, is Expr.Derivative,
+        is Expr.Limit, is Expr.Integral, is Expr.Trig -> 5
     }
 
     private fun wrap(child: Expr, parentPrec: Int): String {
@@ -38,6 +39,16 @@ object LatexRenderer {
         is Expr.Log -> "\\log_{${render(expr.base)}}\\left(${render(expr.arg)}\\right)"
         is Expr.Ln -> "\\ln\\left(${render(expr.arg)}\\right)"
         is Expr.Derivative -> "\\frac{d}{d${expr.variable}}\\left(${render(expr.expr)}\\right)"
+        is Expr.Limit -> "\\lim_{${expr.variable} \\to ${render(expr.target)}}\\left(${render(expr.expr)}\\right)"
+        is Expr.Integral -> {
+            val varPart = if (expr.variable.isNotEmpty()) "\\, d${expr.variable}" else ""
+            if (expr.lowerBound != null && expr.upperBound != null) {
+                "\\int_{${render(expr.lowerBound)}}^{${render(expr.upperBound)}} {${render(expr.expr)}}$varPart"
+            } else {
+                "\\int {${render(expr.expr)}}$varPart"
+            }
+        }
+        is Expr.Trig -> "\\${expr.func}\\left(${render(expr.arg)}\\right)"
     }
 
     /** Katsayı-değişken çarpımlarında "\\cdot" yerine bitişik gösterim (2x) kullanılır. */

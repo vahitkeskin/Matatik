@@ -41,7 +41,10 @@ class MathSolverEngine(
         fun defaultSolvers(): List<Solver> = listOf(
             LinearEquationSolver(),
             LogarithmSolver(),
-            DerivativeSolver()
+            DerivativeSolver(),
+            LimitSolver(),
+            IntegralSolver(),
+            TrigSolver()
         )
     }
 }

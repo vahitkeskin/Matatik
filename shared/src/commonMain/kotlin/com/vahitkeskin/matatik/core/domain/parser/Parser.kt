@@ -130,7 +130,7 @@ class Parser(input: String) {
 
     private fun parseIdentifier(): Expr {
         val name = advance().text
-        return when (name.lowercase()) {
+        return when (val lowerName = name.lowercase()) {
             "ln" -> {
                 expect(TokenType.LPAREN)
                 val arg = parseExpr()
@@ -157,6 +157,39 @@ class Parser(input: String) {
                 val varToken = expect(TokenType.IDENT)
                 expect(TokenType.RPAREN)
                 Expr.Derivative(expr, varToken.text)
+            }
+            "lim", "limit" -> {
+                expect(TokenType.LPAREN)
+                val expr = parseExpr()
+                expect(TokenType.COMMA)
+                val varToken = expect(TokenType.IDENT)
+                expect(TokenType.COMMA)
+                val target = parseExpr()
+                expect(TokenType.RPAREN)
+                Expr.Limit(expr, varToken.text, target)
+            }
+            "int", "integral" -> {
+                expect(TokenType.LPAREN)
+                val expr = parseExpr()
+                expect(TokenType.COMMA)
+                val varToken = expect(TokenType.IDENT)
+                if (current.type == TokenType.COMMA) {
+                    advance()
+                    val lower = parseExpr()
+                    expect(TokenType.COMMA)
+                    val upper = parseExpr()
+                    expect(TokenType.RPAREN)
+                    Expr.Integral(expr, varToken.text, lower, upper)
+                } else {
+                    expect(TokenType.RPAREN)
+                    Expr.Integral(expr, varToken.text, null, null)
+                }
+            }
+            "sin", "cos", "tan", "cot" -> {
+                expect(TokenType.LPAREN)
+                val arg = parseExpr()
+                expect(TokenType.RPAREN)
+                Expr.Trig(lowerName, arg)
             }
             else -> Expr.Variable(name)
         }
