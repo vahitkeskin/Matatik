@@ -65,4 +65,35 @@ class ParserTest {
         assertEquals("sin", trigExpr.func)
         assertEquals("pi", (trigExpr.arg as Expr.Variable).name)
     }
+
+    @Test
+    fun `profesyonel matematik sembolleri dogru ayristirilir`() {
+        // 1. Karekök testi
+        val sqrtExpr = Parser("√(x)").parseExpression()
+        assertTrue(sqrtExpr is Expr.Pow)
+        assertEquals(0.5, (sqrtExpr.exponent as Expr.Num).value)
+
+        // 2. Limit sembolü ve ok testi
+        val limExpr = Parser("lim(x^2, x → 2)").parseExpression()
+        assertTrue(limExpr is Expr.Limit)
+        assertEquals("x", limExpr.variable)
+        assertEquals(2.0, (limExpr.target as Expr.Num).value)
+
+        // 3. İntegral sembolü testi
+        val intExpr = Parser("∫(x, x, 0, 1)").parseExpression()
+        assertTrue(intExpr is Expr.Integral)
+        assertEquals("x", intExpr.variable)
+        assertEquals(0.0, (intExpr.lowerBound as Expr.Num).value)
+        assertEquals(1.0, (intExpr.upperBound as Expr.Num).value)
+
+        // 4. Pi sayısı testi
+        val trigExpr = Parser("sin(π)").parseExpression()
+        assertTrue(trigExpr is Expr.Trig)
+        assertEquals("sin", trigExpr.func)
+        assertEquals("pi", (trigExpr.arg as Expr.Variable).name)
+
+        // 5. Toplam sembolü genişletme testi
+        val sumExpr = Parser("∑(i^2, i, 1, 3)").parseExpression()
+        assertTrue(sumExpr is Expr.Add)
+    }
 }

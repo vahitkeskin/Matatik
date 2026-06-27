@@ -111,6 +111,10 @@ fun SolverContent(
             item {
                 GlassCard {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        MathShortcutBar(
+                            inputText = state.inputText,
+                            onInputChanged = { onIntent(SolverIntent.InputChanged(it)) }
+                        )
                         OutlinedTextField(
                             value = state.inputText,
                             onValueChange = { onIntent(SolverIntent.InputChanged(it)) },
@@ -380,6 +384,56 @@ private fun GhostButton(text: String, onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(text, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
+    }
+}
+
+@Composable
+private fun MathShortcutBar(
+    inputText: String,
+    onInputChanged: (String) -> Unit
+) {
+    val haptic = LocalHapticFeedback.current
+    val shortcuts = listOf(
+        "√" to "√()",
+        "∫" to "∫( , x)",
+        "lim" to "lim( , x → )",
+        "∑" to "∑( , i, 1, 5)",
+        "d/dx" to "d/dx()",
+        "π" to "π",
+        "→" to " → ",
+        "∞" to "∞",
+        "^" to "^"
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        shortcuts.forEach { (label, value) ->
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
+                    .clickable {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onInputChanged(inputText + value)
+                    }
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = label,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
     }
 }
 

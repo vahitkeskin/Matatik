@@ -131,6 +131,12 @@ class Parser(input: String) {
     private fun parseIdentifier(): Expr {
         val name = advance().text
         return when (val lowerName = name.lowercase()) {
+            "sqrt" -> {
+                expect(TokenType.LPAREN)
+                val arg = parseExpr()
+                expect(TokenType.RPAREN)
+                Expr.Pow(arg, Expr.Num(0.5))
+            }
             "ln" -> {
                 expect(TokenType.LPAREN)
                 val arg = parseExpr()
